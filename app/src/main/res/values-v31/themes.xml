@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MySplashScreen" parent="Theme.SplashScreen">
+        <item name="android:windowSplashScreenBackground">@color/orange</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo_dragon_2</item>
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/banner_dragon_ball</item>
+        <item name="postSplashScreenTheme">@style/Theme.DragonBall</item>
+    </style>
+
+    <style name="Theme.DragonBall" parent="android:Theme.Material.Light.NoActionBar" />
+
+</resources>
