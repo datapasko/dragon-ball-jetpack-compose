@@ -1,6 +1,7 @@
 package com.tapascodev.dragonball.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,9 +13,10 @@ import com.tapascodev.dragonball.presentation.screens.PlanetsScreen
 
 @Composable
 fun NavigationWrapper (
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    modifier: Modifier
 ){
-    NavHost(navController = navHostController, startDestination = CharactersNav ) {
+    NavHost(navController = navHostController, startDestination = CharactersNav, modifier = modifier ) {
 
         composable<CharactersNav> {
             CharactersScreen(

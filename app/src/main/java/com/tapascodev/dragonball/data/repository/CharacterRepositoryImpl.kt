@@ -27,6 +27,10 @@ class CharacterRepositoryImpl @Inject constructor(
         ).flow
     }
 
+    override suspend fun getCharactersByName(name: String): List<CharacterModel> {
+        return api.getFilterCharacters(name).map { it.toPresentation() }
+    }
+
     override suspend fun getCharacter(id: Int): CharacterModel {
         return api.getCharacter(id).toPresentation()
     }

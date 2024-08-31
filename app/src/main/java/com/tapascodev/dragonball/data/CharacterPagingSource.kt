@@ -1,5 +1,6 @@
 package com.tapascodev.dragonball.data
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tapascodev.dragonball.data.repository.CharacterApi
@@ -12,7 +13,10 @@ class CharacterPagingSource @Inject constructor(
 ) : PagingSource<Int, CharacterModel>() {
 
     override fun getRefreshKey(state: PagingState<Int, CharacterModel>): Int? {
-        return state.anchorPosition
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterModel> {

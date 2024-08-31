@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CharactersRepository: SafeApiCall {
     suspend fun getAllCharacter() : Flow<PagingData<CharacterModel>>
+    suspend fun getCharactersByName(name:String) : List<CharacterModel>
     suspend fun getCharacter(id: Int) : CharacterModel
 }

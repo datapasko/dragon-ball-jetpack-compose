@@ -3,14 +3,30 @@ package com.tapascodev.dragonball.presentation.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -42,19 +58,11 @@ fun CharactersScreen (
             )
         }
     }
+
 }
 
 @Composable
 fun ListCharacters(characters: LazyPagingItems<CharacterModel>, onDetailClick: (Int) -> Unit) {
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.fondo_dragon),
-            contentDescription = "Background",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-    }
 
     when {
 
@@ -90,19 +98,55 @@ fun ListCharacters(characters: LazyPagingItems<CharacterModel>, onDetailClick: (
 
         else -> {
             if(characters.loadState.append is LoadState.Loading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(64.dp),
-                        color = Color.Blue
-                    )
-                }
+                LinearProgress()
             }
-
-            CharacterList(characters = characters, onClick = { onDetailClick(it.id) })
+            SetContent(characters = characters, onDetailClick = onDetailClick)
         }
     }
+}
 
+@Composable
+fun SetContent(
+    characters: LazyPagingItems<CharacterModel>,
+    onDetailClick: (Int) -> Unit
+) {
+
+    var search by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Image(
+            painterResource(id = R.drawable.banner_dragon_ball),
+            "banner",
+            modifier = Modifier
+                .padding(10.dp)
+                .height(60.dp),
+            contentScale = ContentScale.Fit
+        )
+
+        TextField(
+            value = search,
+            onValueChange = { search = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp)
+                .clip(MaterialTheme.shapes.large),
+            placeholder = { Text(text = "Search") },
+            trailingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "search")
+            },
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
+
+        CharacterList(onClick = { onDetailClick(it.id) }, characters = characters)
+    }
 }

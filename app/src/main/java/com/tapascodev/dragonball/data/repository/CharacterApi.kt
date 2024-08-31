@@ -18,4 +18,9 @@ interface CharacterApi {
     suspend fun getCharacter(
         @Path("id") id: Int
     ) : CharacterResponse
+
+    @GET("characters")
+    suspend fun getFilterCharacters(
+        @Query("name") page: String,
+    ) : List<CharacterResponse>
 }
