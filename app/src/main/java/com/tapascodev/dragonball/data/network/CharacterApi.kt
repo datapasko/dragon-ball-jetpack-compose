@@ -1,4 +1,4 @@
-package com.tapascodev.dragonball.data.repository
+package com.tapascodev.dragonball.data.network
 
 import com.tapascodev.dragonball.data.response.CharacterResponse
 import com.tapascodev.dragonball.data.response.ResponseWrapper
@@ -21,6 +21,6 @@ interface CharacterApi {
 
     @GET("characters")
     suspend fun getFilterCharacters(
-        @Query("name") page: String,
+        @Query("name") name: String,
     ) : List<CharacterResponse>
 }

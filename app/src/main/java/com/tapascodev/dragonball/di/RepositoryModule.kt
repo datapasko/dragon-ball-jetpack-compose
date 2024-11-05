@@ -1,8 +1,12 @@
 package com.tapascodev.dragonball.di
 
-import com.tapascodev.dragonball.data.repository.CharacterApi
+import com.tapascodev.dragonball.data.local.DragonBallDatabase
+import com.tapascodev.dragonball.data.network.CharacterApi
 import com.tapascodev.dragonball.data.repository.CharacterRepositoryImpl
+import com.tapascodev.dragonball.data.network.PlanetApi
+import com.tapascodev.dragonball.data.repository.PlanetRepositoryImpl
 import com.tapascodev.dragonball.domain.repository.CharactersRepository
+import com.tapascodev.dragonball.domain.repository.PlanetsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +24,22 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideCharacterRepository(characterApi: CharacterApi): CharactersRepository {
-        return CharacterRepositoryImpl(characterApi)
+    fun provideCharacterRepository(
+        characterApi: CharacterApi,
+        database: DragonBallDatabase
+    ): CharactersRepository {
+        return CharacterRepositoryImpl(characterApi, database)
+    }
+
+    @Provides
+    fun providerPlanetApiService(retrofit: Retrofit): PlanetApi =
+        retrofit.create(PlanetApi::class.java)
+
+    @Singleton
+    @Provides
+    fun providePlanetRepository(
+        planetApi: PlanetApi
+    ): PlanetsRepository {
+        return PlanetRepositoryImpl(planetApi)
     }
 }

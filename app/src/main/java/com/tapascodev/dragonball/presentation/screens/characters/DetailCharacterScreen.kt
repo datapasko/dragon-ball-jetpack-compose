@@ -1,28 +1,17 @@
-package com.tapascodev.dragonball.presentation.screens
+package com.tapascodev.dragonball.presentation.screens.characters
 
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,24 +37,23 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.tapascodev.dragonball.domain.model.CharacterModel
-import com.tapascodev.dragonball.domain.model.Resource
+import com.tapascodev.dragonball.data.network.Resource
 import com.tapascodev.dragonball.domain.model.TransformationModel
-import com.tapascodev.dragonball.presentation.DragonBallViewModel
 import com.tapascodev.dragonball.presentation.screens.shared.ArrowBackIcon
 import com.tapascodev.dragonball.presentation.screens.shared.LinearProgress
 
 
 @Composable
 fun DetailCharacterScreen (
-    dragonBallViewModel: DragonBallViewModel = hiltViewModel(),
+    characterViewModel: CharacterViewModel = hiltViewModel(),
     id: Int,
     onBack: () -> Unit
 ) {
     LaunchedEffect(id) {
-        dragonBallViewModel.getCharacter(id)
+        characterViewModel.getCharacter(id)
     }
 
-    val characterState =  dragonBallViewModel.character.collectAsState()
+    val characterState =  characterViewModel.character.collectAsState()
 
     when(val state = characterState.value) {
         is Resource.Failure -> {Log.d("messi", "error")}
@@ -77,20 +65,20 @@ fun DetailCharacterScreen (
     }
 }
 
+
 @Composable
 fun DetailCharacter(
     character: CharacterModel,
     onBack: () -> Unit
 ) {
-
     ConstraintLayout (
+
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
 
-        val topGuideLine = createGuidelineFromTop(0.05f)
-        val startGuideLine = createGuidelineFromStart(30.dp)
+        val topGuideLine = createGuidelineFromTop(0.03f)
+        val startGuideLine = createGuidelineFromStart(20.dp)
         val endGuideLine = createGuidelineFromEnd(16.dp)
 
         // Toolbar
@@ -118,18 +106,48 @@ fun DetailCharacter(
                 .padding(end = 16.dp)
         )
 
-        val (name, race, ki, maxKi, affiliation, description, transformations, listTransformations) = createRefs()
+        val (imageCharacter, name, race, ki, maxKi, affiliation, description, transformations, listTransformations) = createRefs()
+        val horizontalCenterGuideLine = createGuidelineFromTop(0.6f)
+        val verticalCenterGuideLine = createGuidelineFromStart(0.5f)
 
-        Text(
+        AsyncImage(
+            model = character.image,
+            contentDescription = "Character",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .constrainAs(imageCharacter) {
+                    top.linkTo(favoriteIcon.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(verticalCenterGuideLine)
+                    bottom.linkTo(horizontalCenterGuideLine)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                }
+            //.padding(top = 10.dp, bottom = 10.dp)
+        )
+
+        Box(
             modifier = Modifier
                 .constrainAs(name) {
                     top.linkTo(backIcon.bottom)
                     start.linkTo(startGuideLine)
-                },
-            text = character.name,
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-        )
+                    end.linkTo(verticalCenterGuideLine)
+                    width = Dimension.fillToConstraints
+                }
+                .background(
+                    Color.Black,
+                    shape = MaterialTheme.shapes.large
+                ),
+        ){
+            Text(
+                text = character.name,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.LightGray
+            )
+        }
+
+
 
         Text(
             modifier = Modifier
@@ -154,99 +172,125 @@ fun DetailCharacter(
             color = MaterialTheme.colorScheme.primary
         )
 
-
-        // Background Character
-        val characterBackground = createRef()
-        val horizontalCenterGuideLine = createGuidelineFromTop(0.7f)
-        val verticalCenterGuideLine = createGuidelineFromStart(0.5f)
-
-        AsyncImage(
-            model = character.image,
-            contentDescription = "Character",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .constrainAs(characterBackground) {
-                    top.linkTo(affiliation.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                    bottom.linkTo(horizontalCenterGuideLine)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                }
-                .padding(top = 10.dp, bottom = 10.dp)
-        )
-
-        createHorizontalChain(ki, maxKi, chainStyle = ChainStyle.SpreadInside)
-
         SetText(modifier = Modifier
             .constrainAs(ki) {
-                top.linkTo(characterBackground.bottom)
-            }
-            .padding(start = 16.dp),
+                top.linkTo(affiliation.bottom)
+                start.linkTo(startGuideLine)
+            },
             label = "Base KI",
             text = character.ki
         )
 
         SetText(modifier = Modifier
             .constrainAs(maxKi) {
-                top.linkTo(ki.top)
-                bottom.linkTo(ki.bottom)
-            }
-            .padding(end = 16.dp),
+                top.linkTo(ki.bottom)
+                start.linkTo(startGuideLine)
+            },
             label = "Total KI",
             text = character.maxKi
         )
 
-        Text(
-            modifier = Modifier
-                .constrainAs(transformations) {
-                    top.linkTo(maxKi.bottom)
-                    start.linkTo(startGuideLine)
-                }
-                .padding(10.dp),
-            text = "Transformations",
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        if(character.transformations.isNotEmpty()) {
 
-        LazyVerticalGrid(
-            modifier = Modifier
-                .constrainAs(listTransformations) {
-                    top.linkTo(transformations.bottom)
-                    start.linkTo(startGuideLine)
-                    end.linkTo(parent.end)
+            Text(
+                modifier = Modifier
+                    .constrainAs(transformations) {
+                        top.linkTo(horizontalCenterGuideLine)
+                        start.linkTo(startGuideLine)
+                    }
+                    .padding(10.dp),
+                text = "Transformations",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            LazyHorizontalGrid(
+                modifier = Modifier
+                    .constrainAs(listTransformations) {
+                        top.linkTo(transformations.bottom)
+                        start.linkTo(startGuideLine)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    },
+                rows = GridCells.Fixed(1),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(
+                    bottom = 10.dp,
+                    end = 5.dp
+                )
+            ) {
+                items(character.transformations.size) {
+                    ItemTransformation(character.transformations[it])
                 }
-                .height(250.dp),
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(character.transformations.size) {
-                ItemTransformation(character.transformations[it])
             }
+
+        } else {
+            Text(
+                modifier = Modifier
+                    .constrainAs(transformations) {
+                        top.linkTo(horizontalCenterGuideLine)
+                        start.linkTo(startGuideLine)
+                    }
+                    .padding(10.dp),
+                text = "Not transformations",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+            )
         }
     }
-
 }
 
 @Composable
 fun ItemTransformation(transformationModel: TransformationModel) {
-    Column (
-        modifier = Modifier.padding(10.dp)
-    ){
-
-        Text(text = transformationModel.name)
+    Box(
+        modifier = Modifier
+            .size(150.dp)
+            .background(
+                color = Color.White,
+                shape = MaterialTheme.shapes.large
+            ),
+        ){
 
         AsyncImage(
             model = transformationModel.image,
             contentDescription = "transformation image",
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.large)
-                .aspectRatio(3f / 2f),
+                .matchParentSize()
+                .padding(5.dp)
+                .clip(MaterialTheme.shapes.large),
             contentScale = ContentScale.Fit
-
         )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.BottomCenter)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.Black.copy(alpha = 0f),
+                            Color.Black.copy(alpha = 0.1f),
+                            Color.Black.copy(alpha = 0.2f),
+                            Color.Black.copy(alpha = 0.4f),
+                            Color.Black.copy(alpha = 0.6f),
+                        )
+                    ),
+                    shape = MaterialTheme.shapes.large
+                ),
+            contentAlignment = Alignment.BottomCenter,
+        ){
+            Text(
+                modifier = Modifier.padding(5.dp),
+                text = transformationModel.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.LightGray,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+        }
     }
 }
 

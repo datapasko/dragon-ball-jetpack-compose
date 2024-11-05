@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -40,6 +42,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -63,24 +66,43 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    //paging
     implementation(libs.pagingCompose)
+    implementation(libs.androidx.paging.runtime.ktx)
+
+    //Dagger Hilt
     implementation(libs.dagger.hilt)
     implementation(libs.dagger.hilt.navigation)
+    implementation(libs.dagger.hilt.lifecycle.compose)
     kapt(libs.dagger.hilt.compiler)
 
-    implementation(libs.coil.compose)
-
+    //Retrofit
     implementation(libs.retrofit2.retrofit)
     implementation(libs.converter.gson)
 
+    //Splash
     implementation(libs.splash.screen)
 
-    implementation(libs.androidx.navigation.compose)
+    //Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    //Compose
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.constraintlayout.compose)
     implementation(libs.live.data.compose)
-    implementation(libs.dagger.hilt.lifecycle.compose)
+    implementation(libs.coil.compose)
+
+    // Room
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+
+
+    // Mock
+    testImplementation (libs.mockk)
+    testImplementation (libs.jetbrains.kotlinx.coroutines.test)
+    testImplementation (libs.androidx.core.testing)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

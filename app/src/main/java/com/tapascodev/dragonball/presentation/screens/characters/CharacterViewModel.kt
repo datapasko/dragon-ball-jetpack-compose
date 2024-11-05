@@ -1,48 +1,32 @@
-package com.tapascodev.dragonball.presentation
+package com.tapascodev.dragonball.presentation.screens.characters
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.tapascodev.dragonball.domain.model.CharacterModel
-import com.tapascodev.dragonball.domain.model.Resource
-import com.tapascodev.dragonball.domain.usecase.GetAllCharactersUseCase
-import com.tapascodev.dragonball.domain.usecase.GetCharacterUseCase
-import com.tapascodev.dragonball.domain.usecase.GetCharactersByNameUseCase
+import com.tapascodev.dragonball.data.network.Resource
+import com.tapascodev.dragonball.domain.usecase.characters.GetAllCharactersUseCase
+import com.tapascodev.dragonball.domain.usecase.characters.GetCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DragonBallViewModel @Inject constructor(
+class CharacterViewModel @Inject constructor(
     private val getAllCharactersUseCase: GetAllCharactersUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
-    private val getCharactersByNameUseCase: GetCharactersByNameUseCase
 ) : ViewModel() {
 
     private val _character = MutableStateFlow<Resource<CharacterModel>> (Resource.Loading)
     val character: StateFlow<Resource<CharacterModel>>
         get()  = _character
 
-    private val _searchText = MutableStateFlow("")
-    val searchText = _searchText.asStateFlow()
-
     private val _characters = MutableStateFlow<Resource<Flow<PagingData<CharacterModel>>>>(Resource.Loading)
     val characters : StateFlow<Resource<Flow<PagingData<CharacterModel>>>>
         get() = _characters
-
-
-    private val _charactersFilter = MutableStateFlow<Resource<List<CharacterModel>>>(Resource.Loading)
-    val charactersFilter : StateFlow<Resource<List<CharacterModel>>>
-        get() = _charactersFilter
 
     init {
         getAllCharacters()
@@ -54,9 +38,5 @@ class DragonBallViewModel @Inject constructor(
 
     fun getCharacter (id: Int) = viewModelScope.launch {
         _character.value = getCharacterUseCase.invoke(id)
-    }
-
-    fun charactersByName(name: String) = viewModelScope.launch {
-        _charactersFilter.value = getCharactersByNameUseCase.invoke(name)
     }
 }

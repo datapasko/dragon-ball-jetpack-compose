@@ -21,17 +21,20 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.tapascodev.dragonball.navigation.CharactersNav
-import com.tapascodev.dragonball.navigation.FavoritesNav
-import com.tapascodev.dragonball.navigation.NavItem
-import com.tapascodev.dragonball.navigation.NavigationWrapper
-import com.tapascodev.dragonball.navigation.PlanetsNav
+import com.tapascodev.dragonball.presentation.navigation.CharactersNav
+import com.tapascodev.dragonball.presentation.navigation.FavoritesNav
+import com.tapascodev.dragonball.presentation.navigation.NavItem
+import com.tapascodev.dragonball.presentation.navigation.NavigationWrapper
+import com.tapascodev.dragonball.presentation.navigation.PlanetsNav
 import org.w3c.dom.Text
 
 
@@ -46,6 +49,7 @@ fun MainScreen (){
     )
 
     val navController = rememberNavController()
+    var searchQuery by rememberSaveable { mutableStateOf("") }
 
     Surface (
         modifier = Modifier.fillMaxSize(),
@@ -101,7 +105,12 @@ fun MainScreen (){
             }
         ) { innerPadding ->
 
-            NavigationWrapper(navHostController = navController, modifier = Modifier.padding(innerPadding))
+            NavigationWrapper(
+                navHostController = navController,
+                modifier = Modifier.padding(innerPadding),
+                searchQuery = searchQuery,
+                onSearchQueryChange = { searchQuery = it }
+            )
         }
     }
 

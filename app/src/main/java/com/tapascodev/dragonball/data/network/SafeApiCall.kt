@@ -1,6 +1,5 @@
-package com.tapascodev.dragonball.domain.repository
+package com.tapascodev.dragonball.data.network
 
-import com.tapascodev.dragonball.domain.model.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException

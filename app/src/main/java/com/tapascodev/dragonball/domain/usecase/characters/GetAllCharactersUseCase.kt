@@ -1,12 +1,11 @@
-package com.tapascodev.dragonball.domain.usecase
+package com.tapascodev.dragonball.domain.usecase.characters
 
 import androidx.paging.PagingData
-import com.tapascodev.dragonball.domain.model.Resource
+import com.tapascodev.dragonball.data.network.Resource
 import com.tapascodev.dragonball.domain.repository.CharactersRepository
 import com.tapascodev.dragonball.domain.model.CharacterModel
-import com.tapascodev.dragonball.domain.repository.SafeApiCall
+import com.tapascodev.dragonball.data.network.SafeApiCall
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetAllCharactersUseCase @Inject constructor(

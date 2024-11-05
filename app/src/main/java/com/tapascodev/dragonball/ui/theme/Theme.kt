@@ -1,5 +1,6 @@
 package com.tapascodev.dragonball.ui.theme
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -8,11 +9,15 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Blue80,
+    primary = Orange80,
     onPrimary = Blue20,
     primaryContainer = Blue30,
     onPrimaryContainer = Blue90,
@@ -28,8 +33,8 @@ private val DarkColorScheme = darkColorScheme(
     onError = Red20,
     errorContainer = Red30,
     onErrorContainer = Red90,
-    background = Grey10,
-    onBackground = Grey90,
+    background = Blue20,
+    onBackground = Blue90,
     surface = BlueGrey30,
     onSurface = BlueGrey80,
     inverseSurface = Grey90,
@@ -56,8 +61,8 @@ private val LightColorScheme = lightColorScheme(
     onError = Color.White,
     errorContainer = Red90,
     onErrorContainer = Red10,
-    background = Grey99,
-    onBackground = Grey10,
+    background = Blue80,
+    onBackground = Blue90,
     surface = BlueGrey90,
     onSurface = BlueGrey30,
     inverseSurface = Grey20,
@@ -82,6 +87,15 @@ fun DragonBallTheme(
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme // negate darkTheme
+        }
     }
 
     MaterialTheme(

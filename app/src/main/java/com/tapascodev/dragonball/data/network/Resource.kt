@@ -1,4 +1,4 @@
-package com.tapascodev.dragonball.domain.model
+package com.tapascodev.dragonball.data.network
 
 sealed class Resource<out T> {
     data class Success<out T>(val value: T) : Resource<T>()

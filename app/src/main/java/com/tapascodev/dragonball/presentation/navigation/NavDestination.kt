@@ -1,4 +1,4 @@
-package com.tapascodev.dragonball.navigation
+package com.tapascodev.dragonball.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
@@ -14,4 +14,10 @@ data class DetailCharacterNav(
 object PlanetsNav
 
 @Serializable
+data class DetailPlanetNav( val id: Int)
+
+@Serializable
 object FavoritesNav
+
+@Serializable
+object SearchNav

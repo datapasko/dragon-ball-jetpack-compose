@@ -1,4 +1,10 @@
 package com.tapascodev.dragonball.domain.repository
 
-class PlanetsRepository {
+import com.tapascodev.dragonball.domain.model.PlanetModel
+import com.tapascodev.dragonball.data.network.Resource
+import kotlinx.coroutines.flow.Flow
+
+interface PlanetsRepository {
+    suspend fun getPlanets(): Resource<List<PlanetModel>>
+    suspend fun getPlanet(id: Int): PlanetModel
 }

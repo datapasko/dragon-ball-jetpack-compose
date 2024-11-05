@@ -1,11 +1,9 @@
-package com.tapascodev.dragonball.domain.usecase
+package com.tapascodev.dragonball.domain.usecase.characters
 
 import com.tapascodev.dragonball.domain.model.CharacterModel
-import com.tapascodev.dragonball.domain.model.Resource
+import com.tapascodev.dragonball.data.network.Resource
 import com.tapascodev.dragonball.domain.repository.CharactersRepository
-import com.tapascodev.dragonball.domain.repository.SafeApiCall
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.tapascodev.dragonball.data.network.SafeApiCall
 import javax.inject.Inject
 
 class GetCharacterUseCase @Inject constructor(

@@ -1,9 +1,8 @@
 package com.tapascodev.dragonball.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.tapascodev.dragonball.data.repository.CharacterApi
+import com.tapascodev.dragonball.data.network.CharacterApi
 import com.tapascodev.dragonball.domain.model.CharacterModel
 import java.io.IOException
 import javax.inject.Inject
@@ -21,13 +20,12 @@ class CharacterPagingSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterModel> {
         return try {
-
             val page = params.key ?: 1
             val response = api.getCharacters(page = page)
             val characters = response.items.map {
                 it.toPresentation()
             }
-            val prevKey = if(page > 0) page - 1 else null
+            val prevKey = if(page == 1) null else page - 1
             val nextKey = if(response.meta.totalPages > page) page + 1 else null
 
             LoadResult.Page(

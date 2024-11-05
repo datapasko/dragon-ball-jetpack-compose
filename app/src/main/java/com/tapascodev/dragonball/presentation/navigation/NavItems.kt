@@ -1,4 +1,4 @@
-package com.tapascodev.dragonball.navigation
+package com.tapascodev.dragonball.presentation.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

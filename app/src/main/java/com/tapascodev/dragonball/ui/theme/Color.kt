@@ -63,7 +63,6 @@ val DarkBlue40 = Color(0xff0000cc)
 val DarkBlue80 = Color(0xff9999ff)
 val DarkBlue90 = Color(0xffccccff)
 
-
 val BlueGrey30 = Color(0xFF262673)
 val BlueGrey50 = Color(0xFF4040bf)
 val BlueGrey60 = Color(0xFF6666cc)
